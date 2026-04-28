@@ -15,3 +15,13 @@
   <div class="hero-right">
     <img src="<?php echo get_template_directory_uri(); ?>/assets/img/profile.png">
   </div>
+
+  <section class="berries container">
+  <h2>IT BERRIES</h2>
+
+  <p>
+    Lorem ipsum dolor sit amet consectetur adipisicing elit...
+  </p>
+
+  <a href="#">READ MORE</a>
+</section>

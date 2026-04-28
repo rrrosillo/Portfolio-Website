@@ -26,3 +26,66 @@ body {
   max-width: 92%;
   margin: 0 auto;
 }
+
+/* HERO SECTION CSS */
+.hero {
+  display: flex;
+  height: 90vh;
+  position: relative;
+}
+
+/* LEFT PANEL */
+.hero-left {
+  width: 50%;
+  background: #d9d9d9;
+  padding: 120px 80px;
+  clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
+}
+
+.hero-left h1 {
+  font-size: 72px;
+  font-weight: 700;
+  margin: 10px 0;
+}
+
+.hero-left .small {
+  font-size: 18px;
+}
+
+.hero-left .role {
+  opacity: 0.6;
+}
+
+/* SOCIAL ICONS */
+.socials {
+  margin-top: 40px;
+  display: flex;
+  gap: 12px;
+}
+
+/* RIGHT PANEL */
+.hero-right {
+  width: 50%;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-right img {
+  max-height: 85%;
+  object-fit: contain;
+}
+
+.berries {
+  background: #111;
+  color: white;
+  padding: 80px;
+  margin-top: -40px;
+}
+
+.berries h2 {
+  letter-spacing: 4px;
+}
+
+/* END HERO SECTION CSS */
