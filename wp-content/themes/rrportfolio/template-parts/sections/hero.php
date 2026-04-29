@@ -16,6 +16,8 @@
     <img src="<?php echo get_template_directory_uri(); ?>/assets/img/profile.png">
   </div>
 
+</section>
+
   <section class="berries container">
   <h2>IT BERRIES</h2>
 
