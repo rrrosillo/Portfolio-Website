@@ -1,60 +1,14 @@
-<?php get_template_part('template-parts/sections/cta'); ?>
 <footer class="footer">
-  <div class="container footer-grid">
+  <section class="container">
 
-    <!-- LOGO / ABOUT -->
-    <div class="footer-col">
-      <h3>Estatein</h3>
-      <p>
-        Discover your dream property with ease. We provide trusted real estate solutions.
-      </p>
-    </div>
+  <div class="title-box">FOOTER SECION</div>
 
-    <!-- LINKS -->
-    <div class="footer-col">
-      <h4>Home</h4>
-      <ul>
-        <li><a href="#">Hero Section</a></li>
-        <li><a href="#">Features</a></li>
-        <li><a href="#">Properties</a></li>
-        <li><a href="#">Testimonials</a></li>
-      </ul>
-    </div>
+  <p class="about-text">
+    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?
+  </p>
 
-    <div class="footer-col">
-      <h4>About</h4>
-      <ul>
-        <li><a href="#">Our Story</a></li>
-        <li><a href="#">Team</a></li>
-        <li><a href="#">Careers</a></li>
-      </ul>
-    </div>
 
-    <div class="footer-col">
-      <h4>Contact</h4>
-      <ul>
-        <li><a href="#">Email Us</a></li>
-        <li><a href="#">Call Us</a></li>
-      </ul>
-    </div>
-
-    <!-- NEWSLETTER -->
-    <div class="footer-col newsletter">
-      <h4>Subscribe</h4>
-      <form>
-        <input type="email" placeholder="Enter your email">
-        <button>→</button>
-      </form>
-    </div>
-
-  </div>
-
-  <!-- BOTTOM -->
-  <div class="footer-bottom">
-    <div class="container">
-      <p>© <?php echo date('Y'); ?> Estatein. All rights reserved.</p>
-    </div>
-  </div>
+</section>
 
   <?php wp_footer(); ?>
 </footer>
