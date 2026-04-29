@@ -83,6 +83,9 @@ body {
   padding: 80px;
   margin-top: -40px;
 }
+.berries.container{
+  background: #111;
+}
 
 .berries h2 {
   letter-spacing: 4px;
