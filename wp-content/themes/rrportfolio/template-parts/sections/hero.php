@@ -1,4 +1,4 @@
-<section class="hero">
+<section class="hero-section">
 
   <div class="hero-left">
     <p class="small">Hi, I am</p>
