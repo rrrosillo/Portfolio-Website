@@ -20,3 +20,17 @@ function rrportfolio_icons() {
   );
 }
 add_action('wp_enqueue_scripts', 'rrportfolio_icons');
+
+function rrportfolio_register_projects_cpt() {
+    register_post_type('project', [
+        'labels' => [
+            'name' => 'Projects',
+            'singular_name' => 'Project'
+        ],
+        'public' => true,
+        'menu_icon' => 'dashicons-portfolio',
+        'supports' => ['title', 'thumbnail'],
+        'has_archive' => true
+    ]);
+}
+add_action('init', 'rrportfolio_register_projects_cpt');
