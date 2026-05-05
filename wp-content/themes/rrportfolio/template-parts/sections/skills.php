@@ -1,4 +1,5 @@
-<section class="skills container">
+<section class="skills-section">
+  <div class="container">
   <div class="wrap">
     <div class="heading-box">
       <h2>SKILLS</h2>
@@ -96,5 +97,6 @@
       </div>
     </div>
   </div>
+</div>
 
 </section>

@@ -273,6 +273,7 @@ body {
 /* SKILLS */
 .skills-section {
   padding: 100px 20px;
+  text-align: center;
 }
 .skills-grid {
   display: grid;
@@ -332,3 +333,98 @@ body {
   }
 }
 /* END SKILLS SECTION CSS */
+/* CONTACT SECTION CSS */
+.contact-section{
+  background: var(--gray);
+    padding: 100px 20px;
+  text-align: center;
+}
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid #000;
+  margin-bottom: 30px;
+  padding: 10px;
+  background: transparent;
+}
+
+.contact-form button {
+  border: none;
+  border-left: 2px solid #000;
+  background: none;
+  padding-left: 10px;
+}
+/* END CONTACT SECTION CSS */
+/* FOOTER CSS */
+.footer {
+  background: #111;
+  color: #fff;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.footer-inner {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* BACK TO TOP */
+.back-to-top {
+  margin-bottom: 40px;
+}
+
+.back-to-top .arrow {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 8px;
+  opacity: 0.8;
+}
+
+.back-to-top a {
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #ccc;
+}
+
+/* SOCIAL ICONS */
+.footer-socials {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.footer-socials a {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #777;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.footer-socials a:hover {
+  background: #fff;
+  color: #000;
+}
+
+/* COPYRIGHT */
+.footer p {
+  font-size: 13px;
+  color: #aaa;
+}
+/* END FOOTER CSS */
+
+/* PORTFOLIO SECTION CSS */
+.portfolio-section{
+  background: var(--gray);
+    padding: 100px 20px;
+  text-align: center;
+}
+
+/* END PORTOFOLIO SECTION CSS */ 
