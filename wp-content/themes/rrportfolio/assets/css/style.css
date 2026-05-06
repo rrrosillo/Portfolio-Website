@@ -21,6 +21,122 @@ body {
   color: var(--black);
 }
 
+html, body {
+  overflow-x: hidden;
+}
+
+/* MAIN MENU CSS */
+/* NAV WRAPPER */
+.top-nav {
+  position: relative;
+  width: 100%;
+  height: 90px;
+  display: flex;
+}
+
+.nav-right,
+.hero-right {
+  overflow: hidden;
+}
+
+/* LEFT SIDE (LIGHT) */
+.nav-left {
+  width: 45%;
+  display: flex;
+  align-items: center;
+  padding-left: 60px;
+}
+
+/* LOGO */
+.nav-left img {
+  height: 40px;
+}
+
+/* RIGHT SIDE */
+.nav-right {
+  width: 55%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 60px;
+}
+
+/* MENU */
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* LINKS */
+.nav-menu li a {
+  color: #fff;
+  font-size: 14px;
+  letter-spacing: 1px;
+  text-decoration: none;
+}
+
+/* CTA BUTTON */
+.btn-contact {
+  background: #fff;
+  color: #000 !important;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+/* BASE HEADER (TRANSPARENT) */
+#site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+/* REMOVE BACKGROUNDS INITIALLY */
+#site-header .nav-left,
+#site-header .nav-right {
+  background: transparent;
+}
+
+/* TEXT COLOR (WHITE OVER HERO) */
+#site-header .nav-menu li a {
+  color: #fff;
+}
+
+/* SCROLLED STATE */
+#site-header.scrolled {
+  background: #000;
+}
+
+/* WHEN SCROLLED, RESTORE SPLIT STYLE */
+#site-header.scrolled .nav-left {
+  background: var(--black);
+}
+
+#site-header.scrolled .nav-right {
+  background: #000;
+}
+
+/* OPTIONAL: SHADOW FOR DEPTH */
+#site-header.scrolled {
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+.hero {
+  padding-top: 90px; /* same as header height */
+}
+
+#site-header.scrolled {
+  backdrop-filter: blur(10px);
+}
+/* END MAIN MENU CSS  */
+
 .container {
   width: 1200px;
   max-width: 92%;
@@ -425,6 +541,7 @@ body {
   background: var(--gray);
     padding: 100px 20px;
   text-align: center;
+  height: 45em;
 }
 
 /* GRID */

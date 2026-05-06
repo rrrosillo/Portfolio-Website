@@ -19,10 +19,10 @@
 </section>
 
   <section class="berries container">
-  <h2>IT BERRIES</h2>
+  <h2>PROFESSIONAL SUMMARY</h2>
 
   <p>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    Dynamic Web Developer with over 11 years of professional experience specializing in WordPress development, customization, and maintenance across diverse industries including digital marketing, healthcare, and eCommerce. Proven ability to thrive in remote and outsourced environments while effectively collaborating with international teams and clients from the US, Hong Kong, Sweden, and Australia. Strong commitment to delivering high-quality solutions that enhance user experience and drive business growth. Adept at leveraging technical expertise to meet project goals with a focus on innovation and efficiency.
   </p>
 
   <a href="#">READ MORE</a>

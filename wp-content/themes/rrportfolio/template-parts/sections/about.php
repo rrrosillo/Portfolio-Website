@@ -7,8 +7,7 @@
     </div>
 
     <p class="about-text">
-      Nulla in velit a metus rhoncus tempus. Nulla congue nulla vel sem varius finibus.
-      Sed ornare sit amet lorem sed viverra.
+      Dynamic Web Developer with over 11 years of professional experience specializing in WordPress development, customization, and maintenance across diverse industries including digital marketing, healthcare, and eCommerce. Proven ability to thrive in remote and outsourced environments while effectively collaborating with international teams and clients from the US, Hong Kong, Sweden, and Australia. Strong commitment to delivering high-quality solutions that enhance user experience and drive business growth. Adept at leveraging technical expertise to meet project goals with a focus on innovation and efficiency.
     </p>
 
     <div class="explore">

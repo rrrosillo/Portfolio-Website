@@ -7,19 +7,35 @@
 
 <body>
 
-<header class="nav">
-  <div class="container nav-inner">
+<header id="site-header" class="top-nav transparent">
 
-    <div class="logo">
-      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo.png">
-    </div>
+  <div class="nav-left">
+    <img src="<?php echo get_template_directory_uri(); ?>/assets/img/portfolio-logo.png" alt="Logo">
+  </div>
 
-    <nav>
-      <a href="#">About me</a>
-      <a href="#">Skills</a>
-      <a href="#">Portfolio</a>
-      <a class="btn" href="#">Contact Me</a>
+  <div class="nav-right">
+
+    <nav class="main-nav">
+
+      <?php
+      if (has_nav_menu('primary')) {
+        wp_nav_menu([
+          'theme_location' => 'primary',
+          'container' => false,
+          'menu_class' => 'nav-menu',
+        ]);
+      } else {
+      ?>
+        <ul class="nav-menu">
+          <li><a href="#about">About me</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#portfolio">Portfolio</a></li>
+          <li><a href="#contact" class="btn-contact">CONTACT ME</a></li>
+        </ul>
+      <?php } ?>
+
     </nav>
 
   </div>
+
 </header>

@@ -16,7 +16,7 @@ function rrportfolio_assets() {
   wp_enqueue_script('main-js', get_template_directory_uri() . '/assets/js/main.js', ['gsap'], null, true);
 
   // AJAX URL
-  wp_localize_script('tg-main', 'tg_ajax', [
+  wp_localize_script('main-js', 'rrportfolio_ajax', [
     'ajax_url' => admin_url('admin-ajax.php')
   ]);
 }
@@ -52,7 +52,15 @@ add_action('init', 'rrportfolio_register_projects_cpt');
 
 function rrportfolio_filter_projects() {
 
-  $category = $_POST['category'];
+   // Debug: check if POST is received
+  if (empty($_POST)) {
+    echo 'NO POST DATA';
+    wp_die();
+  }
+
+  $category = isset($_POST['category']) 
+    ? sanitize_text_field($_POST['category']) 
+    : 'all';
 
   $args = [
     'post_type' => 'project',
@@ -75,12 +83,33 @@ function rrportfolio_filter_projects() {
     while ($query->have_posts()): $query->the_post(); ?>
 
       <div class="portfolio-item">
-        <a href="<?php the_field('project_link'); ?>">
-          <?php the_post_thumbnail('large'); ?>
-        </a>
+
+  <a href="<?php the_field('project_link'); ?>" target="_blank">
+
+    <div class="portfolio-image">
+      <?php the_post_thumbnail('large'); ?>
+    </div>
+
+    <!-- HOVER OVERLAY -->
+    <div class="portfolio-overlay">
+      <div class="overlay-content">
+        <h3><?php the_title(); ?></h3>
+
+        <p>
+          <?php echo esc_html(get_field('project_overlay_subtitle')); ?>
+        </p>
+
+        <span class="view-btn">VIEW PROJECT</span>
       </div>
+    </div>
+
+  </a>
+
+</div>
 
     <?php endwhile;
+  else:
+    echo '<p style="color:white;">No projects found</p>';
   endif;
 
   wp_die();
@@ -88,5 +117,13 @@ function rrportfolio_filter_projects() {
 
 add_action('wp_ajax_tg_filter_projects', 'rrportfolio_filter_projects');
 add_action('wp_ajax_nopriv_tg_filter_projects', 'rrportfolio_filter_projects');
+
+
+function rrportfolio_register_menus() {
+  register_nav_menus([
+    'primary' => 'Primary Menu'
+  ]);
+}
+add_action('after_setup_theme', 'rrportfolio_register_menus');
 
 add_image_size('portfolio-thumb', 600, 400, true);

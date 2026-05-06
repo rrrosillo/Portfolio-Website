@@ -18,6 +18,8 @@ buttons.forEach(button => {
 
     const category = button.dataset.filter;
 
+    console.log(rrportfolio_ajax.ajax_url);
+
     // Animate OUT
     gsap.to('.portfolio-item', {
       opacity: 0,
@@ -26,33 +28,36 @@ buttons.forEach(button => {
       stagger: 0.05,
       onComplete: () => {
 
-        // AJAX CALL
-        fetch(tg_ajax.ajax_url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: `action=tg_filter_projects&category=${category}`
-        })
-        .then(res => res.text())
-        .then(data => {
 
-          grid.innerHTML = data;
+        fetch(rrportfolio_ajax.ajax_url, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+  },
+  body: new URLSearchParams({
+    action: 'tg_filter_projects',
+    category: category || 'all'
+  })
+})
+.then(response => response.text())
+.then(data => {
+  document.querySelector('#portfolio-grid').innerHTML = data;
+})
+.catch(err => console.error('AJAX ERROR:', err));
 
-          // Animate IN
-          gsap.fromTo('.portfolio-item',
-            { opacity: 0, y: 40 },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.5,
-              stagger: 0.08,
-              ease: "power2.out"
-            }
-          );
-
-        });
 
       }
     });
 
   });
+});
+
+const header = document.getElementById('site-header');
+
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 50) {
+    header.classList.add('scrolled');
+  } else {
+    header.classList.remove('scrolled');
+  }
 });
