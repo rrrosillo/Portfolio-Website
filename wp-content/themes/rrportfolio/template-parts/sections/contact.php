@@ -2,7 +2,7 @@
   <div class="container">
     <div class="wrap">
       <div class="heading-box">
-        <h2>SKILLS</h2>
+        <h2>CONTACT</h2>
       </div>
       
       <form class="contact-form">
