@@ -22,21 +22,42 @@ document.addEventListener("DOMContentLoaded", function(event){
 
  //wait until images, links, fonts, stylesheets, and js is loaded
  window.addEventListener("load", function(e){
+    gsap.registerPlugin(ScrollTrigger);
     //custom GSAP code goes here
     // This tween will rotate an element with a class of .my-element
       gsap.to('.my-element', {
-      rotation: 360,
-      duration: 2,
-      ease: 'ease-in'
+        rotation: 360,
+        duration: 2,
+        ease: 'bounce.out'
     })
 
     // GSAP TEST SCRIPT
-    gsap.registerPlugin(ScrollTrigger);
-    gsap.to(".berries h2", {
-      scrollTrigger: ".berries h2", // start the animation when ".box" enters the viewport (once)
-      x: 500,
-      ease: 'bounce.out'
+    gsap.from(".berries h2", {
+        scrollTrigger: {
+          trigger: ".berries h2",
+          start: "top 80%", // animation starts when box reaches 80% of viewport
+          toggleActions: "play none none none"
+        },
+        x: 300,
+        opacity: 0,
+        duration: 1.7,
+        ease: "power1.out"
     });
+
+    gsap.utils.toArray(".berries p, .hero-right img").forEach((element) => {
+      gsap.from(element, {
+        x: 300,
+        opacity: 0,
+        duration: 1.7,
+        ease: "power1.out",
+        scrollTrigger: {
+          trigger: element,
+          start: "top 80%",
+          toggleActions: "restart none restart none"
+        }
+      });
+    });
+
     // END GSAP TEST SCRIPT
 
     // SCROLL TO TOP JS
