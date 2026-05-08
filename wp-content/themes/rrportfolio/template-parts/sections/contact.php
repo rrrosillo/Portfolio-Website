@@ -10,7 +10,7 @@
       <div class="divider">
         <img src="<?php echo get_template_directory_uri(); ?>/assets/img/divider.png" alt="Divider Image for the website" width="170" height="auto">
       </div>
-      <?php echo do_shortcode('[wpforms id="25" title="false"]'); ?>
+      <?php echo do_shortcode('[wpforms id="6" title="false"]'); ?>
 
     </div>
   </div>

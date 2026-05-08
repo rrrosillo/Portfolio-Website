@@ -23,18 +23,89 @@ document.addEventListener("DOMContentLoaded", function(event){
  //wait until images, links, fonts, stylesheets, and js is loaded
  window.addEventListener("load", function(e){
     gsap.registerPlugin(ScrollTrigger);
-    //custom GSAP code goes here
-    // This tween will rotate an element with a class of .my-element
-      gsap.to('.my-element', {
-        rotation: 360,
-        duration: 2,
-        ease: 'bounce.out'
-    })
 
-    // GSAP TEST SCRIPT
-    gsap.from(".berries h2", {
+    // GSAP ANIMATION CODES
+    gsap.from(".hero-right img", {
         scrollTrigger: {
-          trigger: ".berries h2",
+          trigger: ".hero-right img",
+          start: "top 80%", // animation starts when box reaches 80% of viewport
+          toggleActions: "play none none none"
+        },
+        x: 300,
+        opacity: 0,
+        duration: 1.5,
+        ease: "power1.out"
+    });
+
+    gsap.from("p.small", {
+        scrollTrigger: {
+          trigger: "p.small",
+          start: "top 80%", // animation starts when box reaches 80% of viewport
+          toggleActions: "play none none none"
+        },
+        x: -300,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power1.out"
+    });
+
+    gsap.from(".hero-left h1", {
+        scrollTrigger: {
+          trigger: ".hero-left h1",
+          start: "top 80%", // animation starts when box reaches 80% of viewport
+          toggleActions: "play none none none"
+        },
+        x: -400,
+        opacity: 0,
+        delay: 0.5,
+        duration: 1,
+        ease: "power1.out"
+    });
+
+     gsap.from("p.role", {
+        scrollTrigger: {
+          trigger: "p.role",
+          start: "top 80%", // animation starts when box reaches 80% of viewport
+          toggleActions: "play none none none",
+          once: true
+        },
+        x: -500,
+        opacity: 0,
+        delay: 0.8,
+        duration: 1.2,
+        ease: "power1.out"
+    });
+
+     gsap.from(".hero-socials", {
+        scrollTrigger: {
+          trigger: ".hero-socials",
+          start: "top 80%", // animation starts when box reaches 80% of viewport
+          toggleActions: "play none none none",
+          once: true
+        },
+        x: 0,
+        opacity: 0,
+        delay: 1.8,
+        duration: 1.5,
+        ease: "power2.out"
+    });
+
+     gsap.from(".heading-box", {
+        scrollTrigger: {
+          trigger: ".heading-box",
+          start: "top 80%", // animation starts when box reaches 80% of viewport
+          toggleActions: "play none none none",
+          once: true
+        },
+        x: 0,
+        opacity: 0,
+        duration: 1,
+        ease: "power2.out"
+    });
+
+    gsap.from(".berries h2, .berries p", {
+        scrollTrigger: {
+          trigger: ".berries h2, .berries p",
           start: "top 80%", // animation starts when box reaches 80% of viewport
           toggleActions: "play none none none"
         },
@@ -42,20 +113,6 @@ document.addEventListener("DOMContentLoaded", function(event){
         opacity: 0,
         duration: 1.7,
         ease: "power1.out"
-    });
-
-    gsap.utils.toArray(".berries p, .hero-right img").forEach((element) => {
-      gsap.from(element, {
-        x: 300,
-        opacity: 0,
-        duration: 1.7,
-        ease: "power1.out",
-        scrollTrigger: {
-          trigger: element,
-          start: "top 80%",
-          toggleActions: "restart none restart none"
-        }
-      });
     });
 
     // END GSAP TEST SCRIPT
