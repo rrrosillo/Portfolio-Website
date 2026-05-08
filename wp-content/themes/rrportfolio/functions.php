@@ -9,11 +9,12 @@ add_action('after_setup_theme', 'rrportfolio_theme_setup');
 
 function rrportfolio_assets() {
    // GSAP
-  wp_enqueue_script('gsap','https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js',[],null,true);
+  wp_enqueue_script('gsap','https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js',array(),false,true);
+  wp_enqueue_script('gsap-scroll','https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js',array('gsap'),false,true);
   // MAIN CSS
   wp_enqueue_style('main', get_template_directory_uri() . '/assets/css/style.css');
   // MAIN JS
-  wp_enqueue_script('main-js', get_template_directory_uri() . '/assets/js/main.js', ['gsap'], null, true);
+  wp_enqueue_script('main-js', get_template_directory_uri() . '/assets/js/main.js', array('gsap'), false, true);
 
   // AJAX URL
   wp_localize_script('main-js', 'rrportfolio_ajax', [
@@ -115,8 +116,8 @@ function rrportfolio_filter_projects() {
   wp_die();
 }
 
-add_action('wp_ajax_tg_filter_projects', 'rrportfolio_filter_projects');
-add_action('wp_ajax_nopriv_tg_filter_projects', 'rrportfolio_filter_projects');
+add_action('wp_ajax_rrportfolio_filter_projects', 'rrportfolio_filter_projects');
+add_action('wp_ajax_nopriv_rrportfolio_filter_projects', 'rrportfolio_filter_projects');
 
 
 function rrportfolio_register_menus() {

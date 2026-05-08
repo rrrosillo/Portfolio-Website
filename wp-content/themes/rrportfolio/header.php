@@ -27,10 +27,10 @@
       } else {
       ?>
         <ul class="nav-menu">
-          <li><a href="#about">About me</a></li>
+          <li><a href="#about-me">About me</a></li>
           <li><a href="#skills">Skills</a></li>
           <li><a href="#portfolio">Portfolio</a></li>
-          <li><a href="#contact" class="btn-contact">CONTACT ME</a></li>
+          <li><a href="#contact-me" class="btn-contact">CONTACT ME</a></li>
         </ul>
       <?php } ?>
 

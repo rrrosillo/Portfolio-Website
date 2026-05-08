@@ -13,8 +13,8 @@
             <path d="M22 20L44 42" stroke="currentColor" stroke-width="3"/>
           </svg>
         </div>
-        <h3>UI / UX Design</h3>
-        <p>Modern, intuitive and visually engaging interface designs focused on user experience.</p>
+        <h3>Design Conversion</h3>
+        <p>Bringing designs to life through seamless front-end development that delivers fast, responsive, and visually consistent user experiences.</p>
       </div>
 
       <!-- Service Item -->
@@ -29,7 +29,7 @@
           </svg>
         </div>
         <h3>Web Development</h3>
-        <p>Responsive and scalable websites built with clean code and performance in mind.</p>
+        <p>Responsive and scalable websites built with clean, maintainable code, optimized performance, and seamless user experiences across all devices.</p>
       </div>
 
       <!-- Service Item -->
@@ -44,9 +44,12 @@
           </svg>
         </div>
         <h3>Maintenance</h3>
-        <p>Continuous support, bug fixes, updates and optimization for long-term growth.</p>
+        <p>Continuous website support, updates, bug fixes, and optimization to maintain security, performance, and long-term growth.</p>
       </div>
 
     </div>
   </div>
 </section>
+<div class="divider">
+  <img src="<?php echo get_template_directory_uri(); ?>/assets/img/divider.png" alt="Divider Image for the website" width="170" height="auto">
+</div>

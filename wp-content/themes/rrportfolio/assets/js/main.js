@@ -6,58 +6,92 @@ document.querySelector('.back-to-top a').addEventListener('click', function(e) {
   });
 });
 
-const buttons = document.querySelectorAll('.portfolio-filters button');
-const grid = document.querySelector('#portfolio-grid');
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
 
-buttons.forEach(button => {
-  button.addEventListener('click', () => {
-
-    // Active state
-    buttons.forEach(b => b.classList.remove('active'));
-    button.classList.add('active');
-
-    const category = button.dataset.filter;
-
-    console.log(rrportfolio_ajax.ajax_url);
-
-    // Animate OUT
-    gsap.to('.portfolio-item', {
-      opacity: 0,
-      y: 40,
-      duration: 0.3,
-      stagger: 0.05,
-      onComplete: () => {
-
-
-        fetch(rrportfolio_ajax.ajax_url, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-  },
-  body: new URLSearchParams({
-    action: 'tg_filter_projects',
-    category: category || 'all'
-  })
-})
-.then(response => response.text())
-.then(data => {
-  document.querySelector('#portfolio-grid').innerHTML = data;
-})
-.catch(err => console.error('AJAX ERROR:', err));
-
-
-      }
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+        });
     });
-
-  });
 });
 
-const header = document.getElementById('site-header');
+document.addEventListener("DOMContentLoaded", function(event){
 
-window.addEventListener('scroll', () => {
-  if (window.scrollY > 50) {
-    header.classList.add('scrolled');
-  } else {
-    header.classList.remove('scrolled');
-  }
+ console.log("DOM loaded");
+
+ //wait until images, links, fonts, stylesheets, and js is loaded
+ window.addEventListener("load", function(e){
+    //custom GSAP code goes here
+    // This tween will rotate an element with a class of .my-element
+      gsap.to('.my-element', {
+      rotation: 360,
+      duration: 2,
+      ease: 'ease-in'
+    })
+
+    // GSAP TEST SCRIPT
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.to(".berries h2", {
+      scrollTrigger: ".berries h2", // start the animation when ".box" enters the viewport (once)
+      x: 500,
+      ease: 'bounce.out'
+    });
+    // END GSAP TEST SCRIPT
+
+    // SCROLL TO TOP JS
+    const header = document.getElementById('site-header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+    // END SCROLL TO TOP JS
+    // PORTFOLIO SECTION JS
+    const buttons = document.querySelectorAll('.portfolio-filters button');
+    const grid = document.querySelector('#portfolio-grid');
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+
+        // Active state
+        buttons.forEach(b => b.classList.remove('active'));
+        button.classList.add('active');
+
+        const category = button.dataset.filter;
+
+        console.log(rrportfolio_ajax.ajax_url);
+
+        // Animate OUT
+        gsap.to('.portfolio-item', {
+          opacity: 0,
+          y: 40,
+          duration: 0.3,
+          stagger: 0.05,
+          onComplete: () => {
+            fetch(rrportfolio_ajax.ajax_url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+            },
+            body: new URLSearchParams({
+              action: 'rrportfolio_filter_projects',
+              category: category || 'all'
+            })
+          })
+          .then(response => response.text())
+          .then(data => {
+            document.querySelector('#portfolio-grid').innerHTML = data;
+            })
+            .catch(err => console.error('AJAX ERROR:', err));
+          }
+        });
+
+      });
+    });
+    // END PORTFOLIO SECTION JS
+    console.log("window loaded");
+  }, false);
+
 });
