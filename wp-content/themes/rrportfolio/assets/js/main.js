@@ -26,11 +26,6 @@ document.addEventListener("DOMContentLoaded", function(event){
 
     // GSAP ANIMATION CODES
     gsap.from(".hero-right img", {
-        scrollTrigger: {
-          trigger: ".hero-right img",
-          start: "top 80%", // animation starts when box reaches 80% of viewport
-          toggleActions: "play none none none"
-        },
         x: 300,
         opacity: 0,
         duration: 1.5,
@@ -38,11 +33,6 @@ document.addEventListener("DOMContentLoaded", function(event){
     });
 
     gsap.from("p.small", {
-        scrollTrigger: {
-          trigger: "p.small",
-          start: "top 80%", // animation starts when box reaches 80% of viewport
-          toggleActions: "play none none none"
-        },
         x: -300,
         opacity: 0,
         duration: 0.8,
@@ -50,11 +40,6 @@ document.addEventListener("DOMContentLoaded", function(event){
     });
 
     gsap.from(".hero-left h1", {
-        scrollTrigger: {
-          trigger: ".hero-left h1",
-          start: "top 80%", // animation starts when box reaches 80% of viewport
-          toggleActions: "play none none none"
-        },
         x: -400,
         opacity: 0,
         delay: 0.5,
@@ -63,12 +48,6 @@ document.addEventListener("DOMContentLoaded", function(event){
     });
 
      gsap.from("p.role", {
-        scrollTrigger: {
-          trigger: "p.role",
-          start: "top 80%", // animation starts when box reaches 80% of viewport
-          toggleActions: "play none none none",
-          once: true
-        },
         x: -500,
         opacity: 0,
         delay: 0.8,
@@ -76,34 +55,14 @@ document.addEventListener("DOMContentLoaded", function(event){
         ease: "power1.out"
     });
 
-     gsap.from(".hero-socials", {
-        scrollTrigger: {
-          trigger: ".hero-socials",
-          start: "top 80%", // animation starts when box reaches 80% of viewport
-          toggleActions: "play none none none",
-          once: true
-        },
-        x: 0,
-        opacity: 0,
-        delay: 1.8,
-        duration: 1.5,
-        ease: "power2.out"
+     gsap.to(".hero-socials", {
+      opacity: 1,
+      delay: 2,
+      duration: 1.2,
+      ease: "power2.out"
     });
 
-     gsap.from(".heading-box", {
-        scrollTrigger: {
-          trigger: ".heading-box",
-          start: "top 80%", // animation starts when box reaches 80% of viewport
-          toggleActions: "play none none none",
-          once: true
-        },
-        x: 0,
-        opacity: 0,
-        duration: 1,
-        ease: "power2.out"
-    });
-
-    gsap.from(".berries h2, .berries p", {
+     gsap.from(".berries h2, .berries p", {
         scrollTrigger: {
           trigger: ".berries h2, .berries p",
           start: "top 80%", // animation starts when box reaches 80% of viewport
@@ -115,7 +74,182 @@ document.addEventListener("DOMContentLoaded", function(event){
         ease: "power1.out"
     });
 
-    // END GSAP TEST SCRIPT
+     gsap.from("#about-me .heading-box", {
+        x: 0,
+        opacity: 0,
+        delay: 0.5,
+        duration: 1.2,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: "#about-me .heading-box",
+          start: "top 100%", // animation starts when box reaches 80% of viewport
+          toggleActions: "play none none none",
+          once: true
+        }
+    });
+
+    gsap.from("#about-me p:first-child", {
+      y: 100,          // starts 100px below
+      opacity: 0,
+      delay: 1,
+      duration: 1,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: "#about-me",
+        start: "top 80%",
+        toggleActions: "play none none none",
+        once: true
+      }
+    });
+
+    gsap.from("#about-me p:nth-child(2)", {
+        y: 100,          // starts 100px below
+        opacity: 0,
+        delay: 1.2,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: "#about-me",
+          start: "top 80%",
+          toggleActions: "play none none none",
+          once: true
+        }
+      });
+
+     gsap.from("#about-me p:nth-child(3)", {
+        y: 100,          // starts 100px below
+        opacity: 0,
+        delay: 1.5,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: "#about-me",
+          start: "top 80%",
+          toggleActions: "play none none none",
+          once: true
+        }
+      });
+
+      gsap.to(".services-section", {
+        opacity: 1,
+        delay: 0.5,
+        duration: 1,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".services-section",
+          start: "top 100%",
+          toggleActions: "play none none none",
+          once: true
+        }
+      });
+
+      gsap.from("#skills .heading-box", {
+        x: 0,
+        opacity: 0,
+        delay: 0.5,
+        duration: 1.2,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: "#skills .heading-box",
+          start: "top 100%", // animation starts when box reaches 80% of viewport
+          toggleActions: "play none none none",
+          once: true
+        }
+      });
+
+      gsap.from("#contact-me .heading-box", {
+        x: 0,
+        opacity: 0,
+        delay: 0.5,
+        duration: 1.2,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: "#contact-me .heading-box",
+          start: "top 100%", // animation starts when box reaches 80% of viewport
+          toggleActions: "play none none none",
+          once: true
+        }
+      });
+
+      gsap.from("#portfolio .heading-box", {
+        x: 0,
+        opacity: 0,
+        delay: 0.5,
+        duration: 1.2,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: "#portfolio .heading-box",
+          start: "top 100%", // animation starts when box reaches 80% of viewport
+          toggleActions: "play none none none",
+          once: true
+        }
+      });
+
+      gsap.from(".skills-section", {
+        y: 300,          // starts 100px below
+        duration: 1,
+        opacity: 0,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".skills-section",
+          start: "top 100%",
+          toggleActions: "play none none none",
+          once: true
+        }
+      });
+
+      gsap.from("#contact-me h3", {
+          x: 300,          // starts 100px below
+          opacity: 0,
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: "#contact-me h3",
+            start: "top 80%",
+            toggleActions: "play none none none",
+            once: true
+          }
+      });
+
+      gsap.from("#contact-me .p-1", {
+          x: -300,          // starts 100px below
+          opacity: 0,
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: "#contact-me .p-1",
+            start: "top 80%",
+            toggleActions: "play none none none",
+            once: true
+          }
+      });
+
+      gsap.from("#contact-me .p-2", {
+          x: 300,          // starts 100px below
+          opacity: 0,
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: "#contact-me .p-2",
+            start: "top 80%",
+            toggleActions: "play none none none",
+            once: true
+          }
+      });
+
+      gsap.from("#contact-me .contact-form", {
+        y: 300,          // starts 100px below
+        duration: 1,
+        opacity: 0,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: "#contact-me .contact-form",
+          start: "top 100%",
+          toggleActions: "play none none none",
+          once: true
+        }
+      });
+    // END GSAP SCRIPT
 
     // SCROLL TO TOP JS
     const header = document.getElementById('site-header');
@@ -127,6 +261,7 @@ document.addEventListener("DOMContentLoaded", function(event){
       }
     });
     // END SCROLL TO TOP JS
+
     // PORTFOLIO SECTION JS
     const buttons = document.querySelectorAll('.portfolio-filters button');
     const grid = document.querySelector('#portfolio-grid');

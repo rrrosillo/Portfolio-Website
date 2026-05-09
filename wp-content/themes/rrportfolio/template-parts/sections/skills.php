@@ -182,7 +182,7 @@
       </div>
     </div>
   </div>
+  <div class="divider">
+    <img src="<?php echo get_template_directory_uri(); ?>/assets/img/divider.png" alt="Divider Image for the website" width="170" height="auto">
+  </div>
 </section>
-<div class="divider">
-  <img src="<?php echo get_template_directory_uri(); ?>/assets/img/divider.png" alt="Divider Image for the website" width="170" height="auto">
-</div>

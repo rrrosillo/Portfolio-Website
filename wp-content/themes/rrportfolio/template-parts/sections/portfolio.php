@@ -23,35 +23,35 @@
     <?php
     $query = new WP_Query([
       'post_type' => 'project',
-      'posts_per_page' => -1
+      'posts_per_page' => -1,
+
     ]);
 
     while ($query->have_posts()): $query->the_post(); ?>
 
       <div class="portfolio-item">
+        <a href="<?php the_field('project_link'); ?>" target="_blank">
 
-  <a href="<?php the_field('project_link'); ?>" target="_blank">
+          <div class="portfolio-image">
+            <?php the_post_thumbnail('large'); ?>
+          </div>
 
-    <div class="portfolio-image">
-      <?php the_post_thumbnail('large'); ?>
-    </div>
+          <!-- HOVER OVERLAY -->
+          <div class="portfolio-overlay">
+            <div class="overlay-content">
+              <h3><?php the_title(); ?></h3>
 
-    <!-- HOVER OVERLAY -->
-    <div class="portfolio-overlay">
-      <div class="overlay-content">
-        <h3><?php the_title(); ?></h3>
+              <p>
+                <?php echo esc_html(get_field('project_overlay_subtitle')); ?>
+              </p>
 
-        <p>
-          <?php echo esc_html(get_field('project_overlay_subtitle')); ?>
-        </p>
+              <span class="view-btn">VIEW PROJECT</span>
+            </div>
+          </div>
 
-        <span class="view-btn">VIEW PROJECT</span>
+        </a>
+
       </div>
-    </div>
-
-  </a>
-
-</div>
 
     <?php endwhile; wp_reset_postdata(); ?>
 
