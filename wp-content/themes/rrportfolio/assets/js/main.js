@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", function(event){
         }
       });
 
-      gsap.from("#contact-me .heading-box", {
+      /*gsap.from("#contact-me .heading-box", {
         x: 0,
         opacity: 0,
         delay: 0.5,
@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", function(event){
           toggleActions: "play none none none",
           once: true
         }
-      });
+      });*/
 
       gsap.from("#portfolio .heading-box", {
         x: 0,
@@ -198,7 +198,7 @@ document.addEventListener("DOMContentLoaded", function(event){
         }
       });
 
-      gsap.from("#contact-me h3", {
+      /*gsap.from("#contact-me h3", {
           x: 300,          // starts 100px below
           opacity: 0,
           duration: 1,
@@ -219,8 +219,7 @@ document.addEventListener("DOMContentLoaded", function(event){
           scrollTrigger: {
             trigger: "#contact-me .p-1",
             start: "top 80%",
-            toggleActions: "play none none none",
-            once: true
+            toggleActions: "play none none none"
           }
       });
 
@@ -232,8 +231,7 @@ document.addEventListener("DOMContentLoaded", function(event){
           scrollTrigger: {
             trigger: "#contact-me .p-2",
             start: "top 80%",
-            toggleActions: "play none none none",
-            once: true
+            toggleActions: "play none none none"
           }
       });
 
@@ -245,10 +243,9 @@ document.addEventListener("DOMContentLoaded", function(event){
         scrollTrigger: {
           trigger: "#contact-me .contact-form",
           start: "top 100%",
-          toggleActions: "play none none none",
-          once: true
+          toggleActions: "play none none none"
         }
-      });
+      });*/
     // END GSAP SCRIPT
 
     // NAVIGATION MENU SCRIPT
@@ -272,17 +269,6 @@ document.addEventListener("DOMContentLoaded", function(event){
 
     });
     // END NAVIGATION MENU SCRIPT
-
-    // SCROLL TO TOP JS
-    const header = document.getElementById('site-header');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 50) {
-        header.classList.add('scrolled');
-      } else {
-        header.classList.remove('scrolled');
-      }
-    });
-    // END SCROLL TO TOP JS
 
     // PORTFOLIO SECTION JS
     const buttons = document.querySelectorAll('.portfolio-filters button');
@@ -326,8 +312,60 @@ document.addEventListener("DOMContentLoaded", function(event){
       });
     });
     // END PORTFOLIO SECTION JS
+    
     console.log("window loaded");
   }, false);
+
+});
+
+// SCROLL TO TOP JS AND CHANGE LOGO ON SCROLL
+const header = document.getElementById('site-header');
+const logo = document.querySelector('.site-logo img');
+const defaultLogo = rrportfolio_ajax.theme_url + '/assets/img/portfolio-logo.png';
+const scrollLogo  = rrportfolio_ajax.theme_url + '/assets/img/portfolio-logo-white.png';
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 50) {
+    header.classList.add('scrolled');
+    logo.src = scrollLogo;
+  } else {
+    header.classList.remove('scrolled');
+    logo.src = defaultLogo;
+  }
+});
+// END SCROLL TO TOP JS
+if (history.scrollRestoration) {
+    history.scrollRestoration = 'manual';
+}
+
+// NEW PORTFOLIO SCRIPT
+/* PORTFOLIO MOBILE FILTER */
+const filterToggle = document.querySelector('.portfolio-filter-toggle');
+const portfolioFilters = document.querySelector('.portfolio-filters');
+
+if (filterToggle) {
+
+  filterToggle.addEventListener('click', () => {
+
+    filterToggle.classList.toggle('active');
+    portfolioFilters.classList.toggle('active');
+
+  });
+
+}
+
+/* CLOSE FILTERS AFTER CLICK (MOBILE) */
+document.querySelectorAll('.portfolio-filters button').forEach(button => {
+
+  button.addEventListener('click', () => {
+
+    if(window.innerWidth < 768){
+
+      portfolioFilters.classList.remove('active');
+      filterToggle.classList.remove('active');
+
+    }
+
+  });
 
 });
 

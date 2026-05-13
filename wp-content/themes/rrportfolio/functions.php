@@ -18,7 +18,8 @@ function rrportfolio_assets() {
 
   // AJAX URL
   wp_localize_script('main-js', 'rrportfolio_ajax', [
-    'ajax_url' => admin_url('admin-ajax.php')
+    'ajax_url' => admin_url('admin-ajax.php'),
+    'theme_url' => get_template_directory_uri()
   ]);
 }
 add_action('wp_enqueue_scripts', 'rrportfolio_assets');
