@@ -251,6 +251,28 @@ document.addEventListener("DOMContentLoaded", function(event){
       });
     // END GSAP SCRIPT
 
+    // NAVIGATION MENU SCRIPT
+    const menuToggle = document.querySelector('.menu-toggle');
+    const mobileNav = document.querySelector('.main-nav');
+
+    menuToggle.addEventListener('click', () => {
+
+      menuToggle.classList.toggle('active');
+      mobileNav.classList.toggle('active');
+
+    });
+
+    /* CLOSE MENU WHEN CLICKING LINKS */
+    document.querySelectorAll('.nav-menu a').forEach(link => {
+
+      link.addEventListener('click', () => {
+        menuToggle.classList.remove('active');
+        mobileNav.classList.remove('active');
+      });
+
+    });
+    // END NAVIGATION MENU SCRIPT
+
     // SCROLL TO TOP JS
     const header = document.getElementById('site-header');
     window.addEventListener('scroll', () => {
@@ -308,3 +330,4 @@ document.addEventListener("DOMContentLoaded", function(event){
   }, false);
 
 });
+
