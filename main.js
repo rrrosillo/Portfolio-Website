@@ -337,44 +337,6 @@ if (history.scrollRestoration) {
     history.scrollRestoration = 'manual';
 }
 
-// GSAP ANIMATION CODES
-    gsap.from(".hero-right img", {
-        x: 300,
-        opacity: 0,
-        duration: 1.5,
-        ease: "power1.out"
-    });
-
-    gsap.from("p.small", {
-        x: -300,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power1.out"
-    });
-
-    gsap.from(".hero-left h1", {
-        x: -400,
-        opacity: 0,
-        delay: 0.5,
-        duration: 1,
-        ease: "power1.out"
-    });
-
-     gsap.from("p.role", {
-        x: -500,
-        opacity: 0,
-        delay: 0.8,
-        duration: 1.2,
-        ease: "power1.out"
-    });
-
-     gsap.to(".hero-socials", {
-      opacity: 1,
-      delay: 2,
-      duration: 1.2,
-      ease: "power2.out"
-    });
-
 // NEW PORTFOLIO SCRIPT
 /* PORTFOLIO MOBILE FILTER */
 const filterToggle = document.querySelector('.portfolio-filter-toggle');
