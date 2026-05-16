@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WooCommerce Inventory System
  * Description: WooCommerce inventory management system with AJAX stock updates, search/filter, and CSV export.
- * Version: 2.0
+ * Version: 2.1.0
  * Author: Your Name
  */
 
@@ -20,7 +20,16 @@ class WC_Inventory_System {
 
         add_action( 'wp_ajax_wc_update_stock', array( $this, 'ajax_update_stock' ) );
 
+        add_action( 'admin_init', array( $this, 'maybe_export_csv' ) );
+
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+    }
+
+    /**
+     * Load Scripts
+     */
+    public function enqueue_scripts() {
+        wp_enqueue_script( 'jquery' );
     }
 
     /**
@@ -40,17 +49,14 @@ class WC_Inventory_System {
     }
 
     /**
-     * Scripts
-     */
-    public function enqueue_scripts() {
-
-        wp_enqueue_script( 'jquery' );
-    }
-
-    /**
-     * Admin Page
+     * Inventory Admin Page
      */
     public function inventory_admin_page() {
+
+        if ( ! class_exists( 'WooCommerce' ) ) {
+            echo '<div class="notice notice-error"><p>WooCommerce must be installed and activated.</p></div>';
+            return;
+        }
 
         $search = isset( $_GET['inventory_search'] )
             ? sanitize_text_field( $_GET['inventory_search'] )
@@ -73,7 +79,7 @@ class WC_Inventory_System {
 
             <h1>WooCommerce Inventory System</h1>
 
-            <form method="GET" style="margin-bottom:20px;">
+            <form method="GET" style="margin-bottom:20px; display:flex; gap:10px; align-items:center;">
 
                 <input type="hidden" name="page" value="wc-inventory-system">
 
@@ -106,59 +112,78 @@ class WC_Inventory_System {
                         <th>Price</th>
                         <th>Stock</th>
                         <th>Status</th>
-                        <th>Update</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
 
                 <tbody>
 
-                <?php foreach ( $products as $product ) : ?>
+                    <?php if ( ! empty( $products ) ) : ?>
 
-                    <tr>
-                        <td><?php echo $product->get_id(); ?></td>
+                        <?php foreach ( $products as $product ) : ?>
 
-                        <td><?php echo esc_html( $product->get_name() ); ?></td>
+                            <tr>
 
-                        <td><?php echo esc_html( $product->get_sku() ); ?></td>
+                                <td>
+                                    <?php echo esc_html( $product->get_id() ); ?>
+                                </td>
 
-                        <td><?php echo wc_price( $product->get_price() ); ?></td>
+                                <td>
+                                    <?php echo esc_html( $product->get_name() ); ?>
+                                </td>
 
-                        <td>
+                                <td>
+                                    <?php echo esc_html( $product->get_sku() ); ?>
+                                </td>
 
-                            <input
-                                type="number"
-                                class="inventory-stock"
-                                data-product-id="<?php echo esc_attr( $product->get_id() ); ?>"
-                                value="<?php echo esc_attr( $product->get_stock_quantity() ); ?>"
-                                min="0"
-                                style="width:80px;"
-                            >
+                                <td>
+                                    <?php echo wp_kses_post( wc_price( $product->get_price() ) ); ?>
+                                </td>
 
-                        </td>
+                                <td>
 
-                        <td class="stock-status-<?php echo esc_attr( $product->get_id() ); ?>">
+                                    <input
+                                        type="number"
+                                        class="inventory-stock"
+                                        data-product-id="<?php echo esc_attr( $product->get_id() ); ?>"
+                                        value="<?php echo esc_attr( $product->get_stock_quantity() ); ?>"
+                                        min="0"
+                                        style="width:80px;"
+                                    >
 
-                            <?php echo esc_html( ucfirst( $product->get_stock_status() ) ); ?>
+                                </td>
 
-                        </td>
+                                <td class="stock-status-<?php echo esc_attr( $product->get_id() ); ?>">
+                                    <?php echo esc_html( ucfirst( $product->get_stock_status() ) ); ?>
+                                </td>
 
-                        <td>
+                                <td>
 
-                            <button
-                                class="button button-primary update-stock-btn"
-                                data-product-id="<?php echo esc_attr( $product->get_id() ); ?>"
-                            >
-                                Save
-                            </button>
+                                    <button
+                                        class="button button-primary update-stock-btn"
+                                        data-product-id="<?php echo esc_attr( $product->get_id() ); ?>"
+                                    >
+                                        Save
+                                    </button>
 
-                        </td>
-                    </tr>
+                                </td>
 
-                <?php endforeach; ?>
+                            </tr>
+
+                        <?php endforeach; ?>
+
+                    <?php else : ?>
+
+                        <tr>
+                            <td colspan="7">No products found.</td>
+                        </tr>
+
+                    <?php endif; ?>
 
                 </tbody>
 
             </table>
+
         </div>
 
         <script>
@@ -176,6 +201,7 @@ class WC_Inventory_System {
                 $.ajax({
                     url: ajaxurl,
                     type: 'POST',
+                    dataType: 'json',
                     data: {
                         action: 'wc_update_stock',
                         product_id: productID,
@@ -183,13 +209,28 @@ class WC_Inventory_System {
                     },
                     success: function(response){
 
-                        button.text('Saved');
+                        if(response.success){
 
-                        $('.stock-status-' + productID).text(response.data.status);
+                            $('.stock-status-' + productID).text(response.data.status);
+
+                            button.text('Saved');
+
+                        } else {
+
+                            button.text('Error');
+                        }
 
                         setTimeout(function(){
                             button.text('Save');
-                        }, 1000);
+                        }, 1500);
+                    },
+                    error: function(){
+
+                        button.text('Error');
+
+                        setTimeout(function(){
+                            button.text('Save');
+                        }, 1500);
                     }
                 });
             });
@@ -197,14 +238,10 @@ class WC_Inventory_System {
         </script>
 
         <?php
-
-        if ( isset( $_GET['export_csv'] ) ) {
-            $this->export_csv();
-        }
     }
 
     /**
-     * AJAX Stock Update
+     * AJAX Update Stock
      */
     public function ajax_update_stock() {
 
@@ -212,36 +249,54 @@ class WC_Inventory_System {
             wp_send_json_error();
         }
 
-        $product_id = intval( $_POST['product_id'] );
-        $quantity  = intval( $_POST['quantity'] );
+        $product_id = isset( $_POST['product_id'] )
+            ? intval( $_POST['product_id'] )
+            : 0;
+
+        $quantity = isset( $_POST['quantity'] )
+            ? intval( $_POST['quantity'] )
+            : 0;
 
         $product = wc_get_product( $product_id );
 
-        if ( $product ) {
-
-            $product->set_manage_stock( true );
-            $product->set_stock_quantity( $quantity );
-
-            if ( $quantity > 0 ) {
-                $product->set_stock_status( 'instock' );
-                $status = 'Instock';
-            } else {
-                $product->set_stock_status( 'outofstock' );
-                $status = 'Outofstock';
-            }
-
-            $product->save();
-
-            wp_send_json_success(array(
-                'status' => $status
-            ));
+        if ( ! $product ) {
+            wp_send_json_error();
         }
 
-        wp_send_json_error();
+        $product->set_manage_stock( true );
+        $product->set_stock_quantity( $quantity );
+
+        if ( $quantity > 0 ) {
+            $product->set_stock_status( 'instock' );
+            $status = 'Instock';
+        } else {
+            $product->set_stock_status( 'outofstock' );
+            $status = 'Outofstock';
+        }
+
+        $product->save();
+
+        wp_send_json_success(array(
+            'status' => $status
+        ));
     }
 
     /**
-     * CSV Export
+     * CSV Export Trigger
+     */
+    public function maybe_export_csv() {
+
+        if (
+            isset( $_GET['page'] ) &&
+            $_GET['page'] === 'wc-inventory-system' &&
+            isset( $_GET['export_csv'] )
+        ) {
+            $this->export_csv();
+        }
+    }
+
+    /**
+     * Export CSV
      */
     public function export_csv() {
 
@@ -249,8 +304,13 @@ class WC_Inventory_System {
             return;
         }
 
+        $products = wc_get_products(array(
+            'limit' => -1,
+            'status' => 'publish'
+        ));
+
         header( 'Content-Type: text/csv' );
-        header( 'Content-Disposition: attachment; filename="inventory-export.csv"' );
+        header( 'Content-Disposition: attachment; filename=inventory-export.csv' );
 
         $output = fopen( 'php://output', 'w' );
 
@@ -259,13 +319,8 @@ class WC_Inventory_System {
             'Product',
             'SKU',
             'Price',
-            'Stock',
-            'Status'
-        ));
-
-        $products = wc_get_products(array(
-            'limit' => -1,
-            'status' => 'publish'
+            'Stock Quantity',
+            'Stock Status'
         ));
 
         foreach ( $products as $product ) {
@@ -289,6 +344,10 @@ class WC_Inventory_System {
      */
     public function inventory_shortcode() {
 
+        if ( ! class_exists( 'WooCommerce' ) ) {
+            return '<p>WooCommerce is required.</p>';
+        }
+
         $products = wc_get_products(array(
             'limit' => -1,
             'status' => 'publish'
@@ -298,7 +357,39 @@ class WC_Inventory_System {
 
         ?>
 
-        <table class="wc-inventory-table" style="width:100%; border-collapse:collapse;">
+        <style>
+
+        .wc-inventory-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .wc-inventory-table th,
+        .wc-inventory-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .wc-inventory-table th {
+            background: #222;
+            color: #fff;
+        }
+
+        .stock-in {
+            color: green;
+            font-weight: bold;
+        }
+
+        .stock-out {
+            color: red;
+            font-weight: bold;
+        }
+
+        </style>
+
+        <table class="wc-inventory-table">
 
             <thead>
                 <tr>
@@ -312,19 +403,46 @@ class WC_Inventory_System {
 
             <tbody>
 
-            <?php foreach ( $products as $product ) : ?>
+                <?php foreach ( $products as $product ) : ?>
 
-                <tr>
-                    <td><?php echo esc_html( $product->get_name() ); ?></td>
-                    <td><?php echo esc_html( $product->get_sku() ); ?></td>
-                    <td><?php echo wc_price( $product->get_price() ); ?></td>
-                    <td><?php echo esc_html( $product->get_stock_quantity() ); ?></td>
-                    <td><?php echo esc_html( ucfirst( $product->get_stock_status() ) ); ?></td>
-                </tr>
+                    <tr>
 
-            <?php endforeach; ?>
+                        <td>
+                            <?php echo esc_html( $product->get_name() ); ?>
+                        </td>
+
+                        <td>
+                            <?php echo esc_html( $product->get_sku() ); ?>
+                        </td>
+
+                        <td>
+                            <?php echo wp_kses_post( wc_price( $product->get_price() ) ); ?>
+                        </td>
+
+                        <td>
+                            <?php echo esc_html( $product->get_stock_quantity() ); ?>
+                        </td>
+
+                        <td>
+
+                            <?php if ( $product->is_in_stock() ) : ?>
+
+                                <span class="stock-in">In Stock</span>
+
+                            <?php else : ?>
+
+                                <span class="stock-out">Out of Stock</span>
+
+                            <?php endif; ?>
+
+                        </td>
+
+                    </tr>
+
+                <?php endforeach; ?>
 
             </tbody>
+
         </table>
 
         <?php
