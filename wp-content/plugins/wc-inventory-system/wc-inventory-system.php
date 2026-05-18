@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WooCommerce Inventory System
  * Description: WooCommerce inventory management system with AJAX stock updates, search/filter, and CSV export.
- * Version: 2.1.0
+ * Version: 2.1.0   
  * Author: Your Name
  */
 
