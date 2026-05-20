@@ -156,51 +156,69 @@ class WC_Inventory_System {
 
             </form>
 
-            <table class="widefat striped">
+            <table class="wp-list-table widefat fixed striped table-view-list">
 
                 <thead>
                     <tr>
 
                         <?php
-                        function wc_inventory_sort_label( $column, $label, $current_orderby, $current_order ) {
+                        function wc_inventory_column_header( $column, $label, $orderby, $order ) {
 
-                            $arrow = '';
+                            $classes = array( 'manage-column', 'sortable' );
 
-                            if ( $current_orderby === $column ) {
-                                $arrow = ( $current_order === 'ASC' ) ? ' ↑ ASC' : ' ↓ DESC';
+                            if ( $orderby === $column ) {
+                                $classes = array( 'manage-column', 'sorted', strtolower( $order ) );
                             }
 
-                            $url = wc_inventory_sort_url( $column, $current_orderby, $current_order );
+                            $next_order = 'ASC';
 
-                            return '<a href="' . esc_url( $url ) . '">' . esc_html( $label . $arrow ) . '</a>';
+                            if ( $orderby === $column && $order === 'ASC' ) {
+                                $next_order = 'DESC';
+                            }
+
+                            $url = add_query_arg( array(
+                                'page'             => 'wc-inventory-system',
+                                'inventory_search' => isset( $_GET['inventory_search'] )
+                                    ? sanitize_text_field( $_GET['inventory_search'] )
+                                    : '',
+                                'orderby'          => $column,
+                                'order'            => $next_order,
+                                'paged_num'        => isset( $_GET['paged_num'] )
+                                    ? intval( $_GET['paged_num'] )
+                                    : 1,
+                            ), admin_url( 'admin.php' ) );
+
+                            ?>
+
+                            <th scope="col" class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
+
+                                <a href="<?php echo esc_url( $url ); ?>">
+
+                                    <span><?php echo esc_html( $label ); ?></span>
+
+                                    <span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span>
+
+                                </a>
+
+                            </th>
+
+                            <?php
                         }
                         ?>
 
-                        <th>
-                            <?php echo wp_kses_post( wc_inventory_sort_label( 'ID', 'ID', $orderby, $order ) ); ?>
-                        </th>
+                        <?php wc_inventory_column_header( 'ID', 'ID', $orderby, $order ); ?>
 
-                        <th>
-                            <?php echo wp_kses_post( wc_inventory_sort_label( 'title', 'Product', $orderby, $order ) ); ?>
-                        </th>
+                        <?php wc_inventory_column_header( 'title', 'Product', $orderby, $order ); ?>
 
-                        <th>
-                            <?php echo wp_kses_post( wc_inventory_sort_label( 'sku', 'SKU', $orderby, $order ) ); ?>
-                        </th>
+                        <?php wc_inventory_column_header( 'sku', 'SKU', $orderby, $order ); ?>
 
-                        <th>
-                            <?php echo wp_kses_post( wc_inventory_sort_label( 'price', 'Price', $orderby, $order ) ); ?>
-                        </th>
+                        <?php wc_inventory_column_header( 'price', 'Price', $orderby, $order ); ?>
 
-                        <th>
-                            <?php echo wp_kses_post( wc_inventory_sort_label( 'stock_quantity', 'Stock', $orderby, $order ) ); ?>
-                        </th>
+                        <?php wc_inventory_column_header( 'stock_quantity', 'Stock', $orderby, $order ); ?>
 
-                        <th>
-                            <?php echo wp_kses_post( wc_inventory_sort_label( 'stock_status', 'Status', $orderby, $order ) ); ?>
-                        </th>
+                        <?php wc_inventory_column_header( 'stock_status', 'Status', $orderby, $order ); ?>
 
-                        <th>Action</th>
+                        <th scope="col">Action</th>
 
                     </tr>
                 </thead>
