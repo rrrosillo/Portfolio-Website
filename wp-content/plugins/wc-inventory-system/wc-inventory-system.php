@@ -20,6 +20,10 @@ class WC_Inventory_System {
 
         add_action( 'wp_ajax_wc_update_stock', array( $this, 'ajax_update_stock' ) );
 
+        add_action( 'wp_ajax_wc_inventory_search', array( $this, 'ajax_inventory_search' ) );
+
+        add_action('wp_ajax_wc_inventory_pagination', [$this, 'ajax_inventory_pagination']);
+
         add_action( 'admin_init', array( $this, 'maybe_export_csv' ) );
 
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
@@ -86,7 +90,10 @@ class WC_Inventory_System {
         );
 
         if ( ! empty( $search ) ) {
-            $args['search'] = '*' . $search . '*';
+
+            $args['s'] = $search;
+
+            $args['sku'] = $search;
         }
 
         $products = wc_get_products( $args );
@@ -101,7 +108,10 @@ class WC_Inventory_System {
         );
 
         if ( ! empty( $search ) ) {
-            $count_args['search'] = '*' . $search . '*';
+
+            $count_args['s'] = $search;
+
+            $count_args['sku'] = $search;
         }
 
         $total_products = count( wc_get_products( $count_args ) );
@@ -133,28 +143,23 @@ class WC_Inventory_System {
 
             <h1>WooCommerce Inventory System</h1>
 
-            <form method="GET" style="margin-bottom:20px; display:flex; gap:10px; align-items:center;">
+            <div style="margin-bottom:20px; display:flex; gap:10px; align-items:center;">
 
-                <input type="hidden" name="page" value="wc-inventory-system">
+            <input
+                type="text"
+                id="inventory-live-search"
+                placeholder="Search products..."
+                style="width:300px;"
+            >
 
-                <input
-                    type="text"
-                    name="inventory_search"
-                    placeholder="Search products..."
-                    value="<?php echo esc_attr( $search ); ?>"
-                    style="width:300px;"
-                >
+            <a
+                href="<?php echo esc_url( admin_url( 'admin.php?page=wc-inventory-system&export_csv=1' ) ); ?>"
+                class="button button-primary"
+            >
+                Export CSV
+            </a>
 
-                <button class="button">Search</button>
-
-                <a
-                    href="<?php echo esc_url( admin_url( 'admin.php?page=wc-inventory-system&export_csv=1' ) ); ?>"
-                    class="button button-primary"
-                >
-                    Export CSV
-                </a>
-
-            </form>
+        </div>
 
             <table class="wp-list-table widefat fixed striped table-view-list">
 
@@ -223,7 +228,7 @@ class WC_Inventory_System {
                     </tr>
                 </thead>
 
-                <tbody>
+                <tbody id="inventory-table-body">
 
                     <?php if ( ! empty( $products ) ) : ?>
 
@@ -261,7 +266,24 @@ class WC_Inventory_System {
                                 </td>
 
                                 <td class="stock-status-<?php echo esc_attr( $product->get_id() ); ?>">
-                                    <?php echo esc_html( ucfirst( $product->get_stock_status() ) ); ?>
+                                    <?php
+                                        // Get stock status: 'instock', 'outofstock', or 'onbackorder'
+                                        $productStatus = $product->get_stock_status();
+                                        switch ($productStatus) {
+                                             case 'instock':
+                                                    echo "<span class='instock'>In Stock</span>";
+                                                 break;
+                                             case 'outofstock':
+                                                    echo "<span class='outofstock'>Out of Stock</span>";
+                                                 break;
+                                             case 'outofstock':
+                                                    echo "<span class='outofstock'>On Back Order</span>";
+                                                 break;
+                                             default:
+                                                 echo "<span class='default'>Default</span>";
+                                                 break;
+                                         }
+                                    ?>
                                 </td>
 
                                 <td>
@@ -293,7 +315,7 @@ class WC_Inventory_System {
 
             <?php if ( $total_pages > 1 ) : ?>
 
-                <div style="margin-top:20px;">
+                <div class="wp-pagination-orig" style="margin-top:20px;">
 
                     <?php
                     echo paginate_links( array(
@@ -313,55 +335,117 @@ class WC_Inventory_System {
         </div>
 
         <script>
-        jQuery(document).ready(function($){
+            jQuery(document).ready(function($){
 
-            $('.update-stock-btn').on('click', function(){
+                let state = {
+                    search: '',
+                    paged: 1,
+                    orderby: 'date',
+                    order: 'DESC'
+                };
 
-                let button = $(this);
-                let productID = button.data('product-id');
+                function loadTable() {
 
-                let quantity = $('.inventory-stock[data-product-id="' + productID + '"]').val();
+                    $.ajax({
+                        url: ajaxurl,
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                            action: 'wc_inventory_search',
+                            search: state.search,
+                            paged: state.paged,
+                            orderby: state.orderby,
+                            order: state.order
+                        },
+                        beforeSend: function() {
+                            $('#inventory-table-body').html('<tr><td colspan="7">Loading...</td></tr>');
+                        },
+                        success: function(response) {
 
-                button.text('Saving...');
+                            if(response.success) {
+                                $('#inventory-table-body').html(response.data.html);
 
-                $.ajax({
-                    url: ajaxurl,
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                        action: 'wc_update_stock',
-                        product_id: productID,
-                        quantity: quantity
-                    },
-                    success: function(response){
-
-                        if(response.success){
-
-                            $('.stock-status-' + productID).text(response.data.status);
-
-                            button.text('Saved');
-
-                        } else {
-
-                            button.text('Error');
+                                renderPagination(response.data.total_pages);
+                            }
                         }
+                    });
+                }
 
-                        setTimeout(function(){
-                            button.text('Save');
-                        }, 1500);
-                    },
-                    error: function(){
+                function renderPagination(totalPages) {
 
-                        button.text('Error');
+                    let html = '<div class="wc-pagination">';
 
-                        setTimeout(function(){
-                            button.text('Save');
-                        }, 1500);
+                    for (let i = 1; i <= totalPages; i++) {
+
+                        html += `<a href="#" class="page-link ${i === state.paged ? 'active' : ''}" data-page="${i}">${i}</a>`;
                     }
+
+                    html += '</div>';
+
+                    $('.wc-pagination').remove();
+                    $('.wp-pagination-orig').remove();
+                    $('.wrap').append(html);
+                }
+
+                /**
+                 * SEARCH
+                 */
+                $('#inventory-live-search').on('keyup', function(){
+
+                    state.search = $(this).val();
+                    state.paged = 1;
+
+                    loadTable();
                 });
+
+                /**
+                 * PAGINATION CLICK
+                 */
+                $(document).on('click', '.page-link', function(e){
+
+                    e.preventDefault();
+
+                    state.paged = parseInt($(this).data('page'));
+
+                    loadTable();
+                });
+
+                /**
+                 * STOCK UPDATE (unchanged but stable)
+                 */
+                $(document).on('click', '.update-stock-btn', function(){
+
+                    let button = $(this);
+                    let productID = button.data('product-id');
+                    let quantity = $('.inventory-stock[data-product-id="' + productID + '"]').val();
+
+                    button.text('Saving...');
+
+                    $.ajax({
+                        url: ajaxurl,
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                            action: 'wc_update_stock',
+                            product_id: productID,
+                            quantity: quantity
+                        },
+                        success: function(response){
+
+                            if(response.success){
+                                $('.stock-status-' + productID).html(response.data.status);
+                                button.text('Saved');
+                            } else {
+                                button.text('Error');
+                            }
+
+                            setTimeout(() => button.text('Save'), 1200);
+                        }
+                    });
+                });
+
             });
-        });
-        </script>
+            </script>
 
         <?php
     }
@@ -394,10 +478,10 @@ class WC_Inventory_System {
 
         if ( $quantity > 0 ) {
             $product->set_stock_status( 'instock' );
-            $status = 'Instock';
+            $status = 'In Stock';
         } else {
             $product->set_stock_status( 'outofstock' );
-            $status = 'Outofstock';
+            $status = 'Out of Stock';
         }
 
         $product->save();
@@ -527,7 +611,7 @@ class WC_Inventory_System {
                 </tr>
             </thead>
 
-            <tbody>
+            <tbody id="inventory-table-body">
 
                 <?php foreach ( $products as $product ) : ?>
 
@@ -575,6 +659,199 @@ class WC_Inventory_System {
 
         return ob_get_clean();
     }
+
+        /**
+         * AJAX Product Search
+         */
+        public function ajax_inventory_search() {
+
+            if ( ! current_user_can( 'manage_woocommerce' ) ) {
+                wp_send_json_error();
+            }
+
+            global $wpdb;
+
+            $search   = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
+            $paged    = isset($_POST['paged']) ? max(1, intval($_POST['paged'])) : 1;
+            $orderby  = isset($_POST['orderby']) ? sanitize_text_field($_POST['orderby']) : 'date';
+            $order    = isset($_POST['order']) ? sanitize_text_field($_POST['order']) : 'DESC';
+
+            $per_page = 50;
+
+            /**
+             * Get products using WooCommerce query (IMPORTANT FIX)
+             */
+            $args = array(
+                'limit'   => $per_page,
+                'page'    => $paged,
+                'status'  => 'publish',
+                'orderby' => $orderby,
+                'order'   => $order,
+                'return'  => 'objects',
+                's'       => $search,
+            );
+
+            $products = wc_get_products($args);
+
+            /**
+             * Total count (FIXED pagination)
+             */
+            $count_args = array(
+                'limit'  => -1,
+                'status' => 'publish',
+                'return' => 'ids',
+                's'      => $search,
+            );
+
+            $total_products = count(wc_get_products($count_args));
+            $total_pages    = ceil($total_products / $per_page);
+
+            ob_start();
+
+            if ( ! empty($products) ) :
+
+                foreach ( $products as $product ) :
+
+                    ?>
+                    <tr>
+                        <td><?php echo esc_html($product->get_id()); ?></td>
+                        <td><?php echo esc_html($product->get_name()); ?></td>
+                        <td><?php echo esc_html($product->get_sku()); ?></td>
+                        <td><?php echo wp_kses_post(wc_price($product->get_price())); ?></td>
+
+                        <td>
+                            <input type="number"
+                                class="inventory-stock"
+                                data-product-id="<?php echo esc_attr($product->get_id()); ?>"
+                                value="<?php echo esc_attr($product->get_stock_quantity()); ?>"
+                                min="0"
+                                style="width:80px;">
+                        </td>
+
+                        <td class="stock-status-<?php echo esc_attr($product->get_id()); ?>">
+                            <?php 
+                                // Get stock status: 'instock', 'outofstock', or 'onbackorder'
+                                $productStatus = $product->get_stock_status();
+                                switch ($productStatus) {
+                                     case 'instock':
+                                            echo "<span class='instock'>In Stock</span>";
+                                         break;
+                                     case 'outofstock':
+                                            echo "<span class='outofstock'>Out of Stock</span>";
+                                         break;
+                                     case 'outofstock':
+                                            echo "<span class='outofstock'>On Back Order</span>";
+                                         break;
+                                     default:
+                                         echo "<span class='default'>Default</span>";
+                                         break;
+                                 }
+                            ?>
+                        </td>
+
+                        <td>
+                            <button class="button button-primary update-stock-btn"
+                                data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+                                Save
+                            </button>
+                        </td>
+                    </tr>
+                    <?php
+
+                endforeach;
+
+            else :
+
+                echo '<tr><td colspan="7">No products found.</td></tr>';
+
+            endif;
+
+            wp_send_json_success([
+                'html' => ob_get_clean(),
+                'total_pages' => $total_pages,
+                'current_page' => $paged
+            ]);
+        }
+
+        /**
+         * AJAX Pagination
+         */
+        public function ajax_inventory_pagination() {
+
+            if ( ! current_user_can( 'manage_woocommerce' ) ) {
+                wp_send_json_error();
+            }
+
+            $paged   = isset($_POST['paged']) ? max(1, intval($_POST['paged'])) : 1;
+            $search  = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
+            $orderby = isset($_POST['orderby']) ? sanitize_text_field($_POST['orderby']) : 'date';
+            $order   = isset($_POST['order']) ? sanitize_text_field($_POST['order']) : 'DESC';
+
+            $per_page = 50;
+
+            $args = array(
+                'limit'   => $per_page,
+                'page'    => $paged,
+                'status'  => 'publish',
+                'orderby' => $orderby,
+                'order'   => $order,
+                'return'  => 'objects',
+                's'       => $search,
+            );
+
+            $products = wc_get_products($args);
+
+            $count_args = array(
+                'limit'  => -1,
+                'status' => 'publish',
+                'return' => 'ids',
+                's'      => $search,
+            );
+
+            $total_products = count(wc_get_products($count_args));
+            $total_pages = ceil($total_products / $per_page);
+
+            ob_start();
+
+            foreach ( $products as $product ) :
+
+                ?>
+                <tr>
+                    <td><?php echo esc_html($product->get_id()); ?></td>
+                    <td><?php echo esc_html($product->get_name()); ?></td>
+                    <td><?php echo esc_html($product->get_sku()); ?></td>
+                    <td><?php echo wp_kses_post(wc_price($product->get_price())); ?></td>
+
+                    <td>
+                        <input type="number"
+                            class="inventory-stock"
+                            data-product-id="<?php echo esc_attr($product->get_id()); ?>"
+                            value="<?php echo esc_attr($product->get_stock_quantity()); ?>">
+                    </td>
+
+                    <td class="stock-status-<?php echo esc_attr($product->get_id()); ?>">
+                        <?php echo $product->get_stock_status(); ?>
+                    </td>
+
+                    <td>
+                        <button class="button button-primary update-stock-btn"
+                            data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+                            Save
+                        </button>
+                    </td>
+                </tr>
+                <?php
+
+            endforeach;
+
+            wp_send_json_success([
+                'html' => ob_get_clean(),
+                'total_pages' => $total_pages,
+                'current_page' => $paged
+            ]);
+        }
+
+
 }
 
 new WC_Inventory_System();
