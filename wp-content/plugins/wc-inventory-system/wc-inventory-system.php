@@ -1,9 +1,11 @@
 <?php
 /**
  * Plugin Name: WooCommerce Inventory System
- * Description: WooCommerce inventory management system with AJAX stock updates, search/filter, and CSV export.
- * Version: 2.1.0   
+ * Plugin URI: https://example.com
+ * Description: Simple WooCommerce inventory management system with frontend shortcode display.
+ * Version: 2.1.1
  * Author: Your Name
+ * License: GPL2
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -13,30 +15,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WC_Inventory_System {
 
     public function __construct() {
-
         add_action( 'admin_menu', array( $this, 'create_admin_menu' ) );
-
         add_shortcode( 'wc_inventory_table', array( $this, 'inventory_shortcode' ) );
-
-        add_action( 'wp_ajax_wc_update_stock', array( $this, 'ajax_update_stock' ) );
-
-        add_action( 'admin_init', array( $this, 'maybe_export_csv' ) );
-
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-    }
-
-    /**
-     * Load Scripts
-     */
-    public function enqueue_scripts() {
-        wp_enqueue_script( 'jquery' );
+        add_action( 'admin_post_update_inventory_stock', array( $this, 'update_inventory_stock' ) );
     }
 
     /**
      * Admin Menu
      */
     public function create_admin_menu() {
-
         add_menu_page(
             'Inventory System',
             'Inventory System',
@@ -49,7 +36,7 @@ class WC_Inventory_System {
     }
 
     /**
-     * Inventory Admin Page
+     * Admin Page
      */
     public function inventory_admin_page() {
 
@@ -58,61 +45,46 @@ class WC_Inventory_System {
             return;
         }
 
-        $search = isset( $_GET['inventory_search'] )
-            ? sanitize_text_field( $_GET['inventory_search'] )
-            : '';
-
-        $args = array(
-            'limit'  => -1,
+        $products = wc_get_products(array(
+            'limit' => -1,
             'status' => 'publish'
-        );
-
-        if ( ! empty( $search ) ) {
-            $args['search'] = '*' . $search . '*';
-        }
-
-        $products = wc_get_products( $args );
+        ));
 
         ?>
 
         <div class="wrap">
-
             <h1>WooCommerce Inventory System</h1>
 
-            <form method="GET" style="margin-bottom:20px; display:flex; gap:10px; align-items:center;">
-
-                <input type="hidden" name="page" value="wc-inventory-system">
-
-                <input
-                    type="text"
-                    name="inventory_search"
-                    placeholder="Search products..."
-                    value="<?php echo esc_attr( $search ); ?>"
-                    style="width:300px;"
-                >
-
-                <button class="button">Search</button>
-
-                <a
-                    href="<?php echo esc_url( admin_url( 'admin.php?page=wc-inventory-system&export_csv=1' ) ); ?>"
-                    class="button button-primary"
-                >
-                    Export CSV
-                </a>
-
-            </form>
-
             <table class="widefat striped">
-
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Product</th>
-                        <th>SKU</th>
-                        <th>Price</th>
-                        <th>Stock</th>
-                        <th>Status</th>
+
+                        <?php
+
+                        function inventory_sort_link( $label, $column ) {
+
+                            $current_order = isset( $_GET['order'] ) ? $_GET['order'] : 'ASC';
+
+                            $new_order = $current_order === 'ASC' ? 'DESC' : 'ASC';
+
+                            $url = add_query_arg(array(
+                                'orderby' => $column,
+                                'order'   => $new_order
+                            ));
+
+                            return '<a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a>';
+                        }
+
+                        ?>
+
+                        <th><?php echo inventory_sort_link( 'ID', 'ID' ); ?></th>
+                        <th><?php echo inventory_sort_link( 'Product', 'title' ); ?></th>
+                        <th><?php echo inventory_sort_link( 'SKU', 'sku' ); ?></th>
+                        <th><?php echo inventory_sort_link( 'Price', 'price' ); ?></th>
+                        <th><?php echo inventory_sort_link( 'Stock', 'stock_quantity' ); ?></th>
+                        <th><?php echo inventory_sort_link( 'Status', 'stock_status' ); ?></th>
                         <th>Action</th>
+
                     </tr>
                 </thead>
 
@@ -183,6 +155,42 @@ class WC_Inventory_System {
                 </tbody>
 
             </table>
+
+            <?php
+
+            $total_products = wc_get_products(array(
+                'limit'  => -1,
+                'return' => 'ids',
+                'status' => 'publish'
+            ));
+
+            $total_pages = ceil( count( $total_products ) / $per_page );
+
+            if ( $total_pages > 1 ) :
+
+                echo '<div style="margin-top:20px;">';
+
+                for ( $i = 1; $i <= $total_pages; $i++ ) {
+
+                    $page_url = add_query_arg(array(
+                        'paged_inventory' => $i
+                    ));
+
+                    if ( $i == $paged ) {
+
+                        echo '<span style="margin-right:10px; font-weight:bold;">' . $i . '</span>';
+
+                    } else {
+
+                        echo '<a style="margin-right:10px;" href="' . esc_url( $page_url ) . '">' . $i . '</a>';
+                    }
+                }
+
+                echo '</div>';
+
+            endif;
+
+            ?>
 
         </div>
 
