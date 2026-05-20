@@ -49,8 +49,8 @@ class WC_Inventory_System {
     }
 
     /**
-     * Inventory Admin Page
-     */
+ * Inventory Admin Page
+ */
     public function inventory_admin_page() {
 
         if ( ! class_exists( 'WooCommerce' ) ) {
@@ -62,9 +62,27 @@ class WC_Inventory_System {
             ? sanitize_text_field( $_GET['inventory_search'] )
             : '';
 
+        $orderby = isset( $_GET['orderby'] )
+            ? sanitize_text_field( $_GET['orderby'] )
+            : 'date';
+
+        $order = isset( $_GET['order'] )
+            ? sanitize_text_field( $_GET['order'] )
+            : 'DESC';
+
+        $paged = isset( $_GET['paged_num'] )
+            ? max( 1, intval( $_GET['paged_num'] ) )
+            : 1;
+
+        $per_page = 50;
+
         $args = array(
-            'limit'  => -1,
-            'status' => 'publish'
+            'limit'   => $per_page,
+            'page'    => $paged,
+            'status'  => 'publish',
+            'orderby' => $orderby,
+            'order'   => $order,
+            'return'  => 'objects'
         );
 
         if ( ! empty( $search ) ) {
@@ -72,6 +90,42 @@ class WC_Inventory_System {
         }
 
         $products = wc_get_products( $args );
+
+        /**
+         * Get total count for pagination
+         */
+        $count_args = array(
+            'limit'  => -1,
+            'status' => 'publish',
+            'return' => 'ids'
+        );
+
+        if ( ! empty( $search ) ) {
+            $count_args['search'] = '*' . $search . '*';
+        }
+
+        $total_products = count( wc_get_products( $count_args ) );
+
+        $total_pages = ceil( $total_products / $per_page );
+
+        /**
+         * Helper for sorting URLs
+         */
+        function wc_inventory_sort_url( $column, $current_orderby, $current_order ) {
+
+            $order = 'ASC';
+
+            if ( $current_orderby === $column && $current_order === 'ASC' ) {
+                $order = 'DESC';
+            }
+
+            return add_query_arg( array(
+                'page'             => 'wc-inventory-system',
+                'inventory_search' => isset( $_GET['inventory_search'] ) ? sanitize_text_field( $_GET['inventory_search'] ) : '',
+                'orderby'          => $column,
+                'order'            => $order,
+            ), admin_url( 'admin.php' ) );
+        }
 
         ?>
 
@@ -106,13 +160,45 @@ class WC_Inventory_System {
 
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Product</th>
-                        <th>SKU</th>
-                        <th>Price</th>
-                        <th>Stock</th>
-                        <th>Status</th>
+
+                        <th>
+                            <a href="<?php echo esc_url( wc_inventory_sort_url( 'ID', $orderby, $order ) ); ?>">
+                                ID
+                            </a>
+                        </th>
+
+                        <th>
+                            <a href="<?php echo esc_url( wc_inventory_sort_url( 'title', $orderby, $order ) ); ?>">
+                                Product
+                            </a>
+                        </th>
+
+                        <th>
+                            <a href="<?php echo esc_url( wc_inventory_sort_url( 'sku', $orderby, $order ) ); ?>">
+                                SKU
+                            </a>
+                        </th>
+
+                        <th>
+                            <a href="<?php echo esc_url( wc_inventory_sort_url( 'price', $orderby, $order ) ); ?>">
+                                Price
+                            </a>
+                        </th>
+
+                        <th>
+                            <a href="<?php echo esc_url( wc_inventory_sort_url( 'stock_quantity', $orderby, $order ) ); ?>">
+                                Stock
+                            </a>
+                        </th>
+
+                        <th>
+                            <a href="<?php echo esc_url( wc_inventory_sort_url( 'stock_status', $orderby, $order ) ); ?>">
+                                Status
+                            </a>
+                        </th>
+
                         <th>Action</th>
+
                     </tr>
                 </thead>
 
@@ -183,6 +269,25 @@ class WC_Inventory_System {
                 </tbody>
 
             </table>
+
+            <?php if ( $total_pages > 1 ) : ?>
+
+                <div style="margin-top:20px;">
+
+                    <?php
+                    echo paginate_links( array(
+                        'base'      => add_query_arg( 'paged_num', '%#%' ),
+                        'format'    => '',
+                        'current'   => $paged,
+                        'total'     => $total_pages,
+                        'prev_text' => '&laquo;',
+                        'next_text' => '&raquo;',
+                    ) );
+                    ?>
+
+                </div>
+
+            <?php endif; ?>
 
         </div>
 
