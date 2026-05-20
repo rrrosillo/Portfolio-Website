@@ -161,40 +161,43 @@ class WC_Inventory_System {
                 <thead>
                     <tr>
 
+                        <?php
+                        function wc_inventory_sort_label( $column, $label, $current_orderby, $current_order ) {
+
+                            $arrow = '';
+
+                            if ( $current_orderby === $column ) {
+                                $arrow = ( $current_order === 'ASC' ) ? ' ↑ ASC' : ' ↓ DESC';
+                            }
+
+                            $url = wc_inventory_sort_url( $column, $current_orderby, $current_order );
+
+                            return '<a href="' . esc_url( $url ) . '">' . esc_html( $label . $arrow ) . '</a>';
+                        }
+                        ?>
+
                         <th>
-                            <a href="<?php echo esc_url( wc_inventory_sort_url( 'ID', $orderby, $order ) ); ?>">
-                                ID
-                            </a>
+                            <?php echo wp_kses_post( wc_inventory_sort_label( 'ID', 'ID', $orderby, $order ) ); ?>
                         </th>
 
                         <th>
-                            <a href="<?php echo esc_url( wc_inventory_sort_url( 'title', $orderby, $order ) ); ?>">
-                                Product
-                            </a>
+                            <?php echo wp_kses_post( wc_inventory_sort_label( 'title', 'Product', $orderby, $order ) ); ?>
                         </th>
 
                         <th>
-                            <a href="<?php echo esc_url( wc_inventory_sort_url( 'sku', $orderby, $order ) ); ?>">
-                                SKU
-                            </a>
+                            <?php echo wp_kses_post( wc_inventory_sort_label( 'sku', 'SKU', $orderby, $order ) ); ?>
                         </th>
 
                         <th>
-                            <a href="<?php echo esc_url( wc_inventory_sort_url( 'price', $orderby, $order ) ); ?>">
-                                Price
-                            </a>
+                            <?php echo wp_kses_post( wc_inventory_sort_label( 'price', 'Price', $orderby, $order ) ); ?>
                         </th>
 
                         <th>
-                            <a href="<?php echo esc_url( wc_inventory_sort_url( 'stock_quantity', $orderby, $order ) ); ?>">
-                                Stock
-                            </a>
+                            <?php echo wp_kses_post( wc_inventory_sort_label( 'stock_quantity', 'Stock', $orderby, $order ) ); ?>
                         </th>
 
                         <th>
-                            <a href="<?php echo esc_url( wc_inventory_sort_url( 'stock_status', $orderby, $order ) ); ?>">
-                                Status
-                            </a>
+                            <?php echo wp_kses_post( wc_inventory_sort_label( 'stock_status', 'Status', $orderby, $order ) ); ?>
                         </th>
 
                         <th>Action</th>
